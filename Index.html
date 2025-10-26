@@ -1,900 +1,769 @@
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Young Boys Party - Buy Tickets</title>
+    <title>Category Voting Portal 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://js.paystack.co/v1/inline.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #fff;
-            line-height: 1.6;
+
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #fdbb2d;
+            --light: rgba(255, 255, 255, 0.9);
+            --dark: #121212;
+            --card-bg: rgba(255, 255, 255, 0.1);
         }
-        
+
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
         }
-        
-        /* Header Styles */
+
         header {
-            padding: 30px 0;
             text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            margin-bottom: 30px;
         }
-        
-        .logo {
+
+        .logo h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #e94560;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 5px;
         }
-        
-        .tagline {
-            font-size: 1.2rem;
-            color: #ccc;
-            margin-bottom: 20px;
+
+        .logo h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            opacity: 0.9;
         }
-        
-        /* Main Content */
-        main {
-            padding: 50px 0;
+
+        .divider {
+            height: 2px;
+            width: 80%;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 20px auto;
         }
-        
-        .ticket-options {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-        
-        .ticket-card {
-            background: rgba(255, 255, 255, 0.05);
+
+        .category-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border-radius: 15px;
-            padding: 30px;
-            width: 300px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .category-title i {
+            color: var(--accent);
+        }
+
+        .dropdown-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .dropdown-btn {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .dropdown-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: rgba(30, 30, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            margin-top: 5px;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 10;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropdown-list.active {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        .dropdown-item {
+            padding: 15px 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: 25px;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            color: var(--accent);
+        }
+
+        .selected-category {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            min-height: 30px;
+            color: var(--accent);
+            font-weight: 500;
             text-align: center;
+        }
+
+        .contestants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .contestant-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        .ticket-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+
+        .contestant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
         }
-        
-        .ticket-type {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #e94560;
-        }
-        
-        .ticket-price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        
-        .ticket-features {
-            list-style: none;
-            margin-bottom: 25px;
-        }
-        
-        .ticket-features li {
-            padding: 8px 0;
+
+        .contestant-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        .select-btn {
-            background: #e94560;
-            color: white;
+
+        .contestant-info {
+            padding: 20px;
+        }
+
+        .contestant-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        .contestant-description {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .vote-count {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .vote-count i {
+            color: var(--accent);
+        }
+
+        .vote-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
             border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
+            border-radius: 8px;
+            color: white;
             font-size: 1rem;
             font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            width: 100%;
-        }
-        
-        .select-btn:hover {
-            background: #d63447;
-        }
-        
-        /* Purchase Form */
-        .purchase-form {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 600px;
-            margin: 0 auto;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .form-title {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #e94560;
-            font-size: 1.8rem;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: #e94560;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .form-row .form-group {
-            flex: 1;
-        }
-        
-        .payment-methods {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        
-        .payment-method {
-            flex: 1;
-            text-align: center;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        
-        .payment-method:hover, .payment-method.active {
-            border-color: #e94560;
-            background: rgba(233, 69, 96, 0.1);
+
+        .vote-btn:hover {
+            background: linear-gradient(to right, #ffcc44, #c62828);
+            transform: translateY(-2px);
         }
-        
-        .payment-method img {
-            height: 30px;
-            margin-bottom: 8px;
+
+        .vote-btn:active {
+            transform: translateY(1px);
         }
-        
-        .payment-method span {
-            display: block;
-            font-size: 0.9rem;
-        }
-        
-        .purchase-btn {
-            background: #e94560;
-            color: white;
+
+        .proceed-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
             border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 1.1rem;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease;
-            width: 100%;
-            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(178, 31, 31, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .purchase-btn:hover {
-            background: #d63447;
+
+        .proceed-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(178, 31, 31, 0.6);
         }
-        
-        /* Confirmation Modal */
-        .confirmation-modal {
+
+        .proceed-btn:active {
+            transform: translateY(1px);
+        }
+
+        .hidden {
             display: none;
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Modal Styles */
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
             align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
         .modal-content {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
             border-radius: 15px;
             padding: 30px;
-            max-width: 500px;
             width: 90%;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
         }
-        
-        .modal-title {
-            color: #e94560;
-            font-size: 1.8rem;
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
-        
-        .confirmation-code {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #4CAF50;
-            margin: 20px 0;
-            letter-spacing: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
         }
-        
-        .confirmation-details {
-            text-align: left;
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-        }
-        
-        .confirmation-details p {
-            margin: 10px 0;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        
-        .close-modal, .download-pdf {
-            background: #e94560;
-            color: white;
+
+        .close-modal {
+            background: none;
             border: none;
-            padding: 12px 25px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .payment-details {
+            margin-bottom: 25px;
+        }
+
+        .payment-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .payment-amount {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .paystack-btn {
+            width: 100%;
+            padding: 15px;
+            background: #00a859;
+            border: none;
             border-radius: 8px;
-            font-size: 1rem;
+            color: white;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s ease;
-            flex: 1;
-        }
-        
-        .download-pdf {
-            background: #4CAF50;
-        }
-        
-        .download-pdf:hover {
-            background: #45a049;
-        }
-        
-        .close-modal:hover {
-            background: #d63447;
-        }
-        
-        /* PDF Ticket Template (Hidden) */
-        .pdf-ticket {
-            display: none;
-            background: white;
-            color: black;
-            padding: 30px;
-            max-width: 600px;
-            margin: 0 auto;
-            font-family: Arial, sans-serif;
-        }
-        
-        .pdf-header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #e94560;
-            padding-bottom: 15px;
-        }
-        
-        .pdf-logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #e94560;
-            margin-bottom: 10px;
-        }
-        
-        .pdf-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        
-        .pdf-subtitle {
-            color: #666;
-            font-size: 1rem;
-        }
-        
-        .pdf-code {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: bold;
-            color: #e94560;
-            margin: 20px 0;
-            padding: 15px;
-            border: 2px dashed #e94560;
-            background: #f9f9f9;
-        }
-        
-        .pdf-details {
-            margin: 20px 0;
-        }
-        
-        .pdf-detail-row {
             display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        
-        .pdf-detail-label {
-            font-weight: bold;
-            color: #333;
+
+        .paystack-btn:hover {
+            background: #008f4c;
         }
-        
-        .pdf-detail-value {
-            color: #666;
-        }
-        
-        .pdf-footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-            color: #888;
-            font-size: 0.9rem;
-        }
-        
-        .pdf-qr-placeholder {
-            text-align: center;
-            margin: 20px 0;
-            padding: 20px;
-            background: #f5f5f5;
-            border: 1px dashed #ccc;
-        }
-        
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            background: rgba(0, 0, 0, 0.3);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #aaa;
-            font-size: 0.9rem;
-        }
-        
-        /* Responsive */
+
+        /* Mobile Responsiveness */
         @media (max-width: 768px) {
-            .ticket-options {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
-            
-            .confirmation-code {
+            .logo h1 {
                 font-size: 2rem;
             }
             
-            .modal-buttons {
-                flex-direction: column;
+            .logo h2 {
+                font-size: 1.5rem;
+            }
+            
+            .category-section {
+                padding: 20px 15px;
+            }
+            
+            .dropdown-btn {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+            
+            .dropdown-item {
+                padding: 12px 15px;
+            }
+            
+            .contestants-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .contestant-image {
+                height: 200px;
+            }
+            
+            .proceed-btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+            
+            .logo h2 {
+                font-size: 1.3rem;
+            }
+            
+            .category-title {
+                font-size: 1.3rem;
+            }
+            
+            .contestants-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1 class="logo">Young Boys Party</h1>
-            <p class="tagline">Get Your Tickets Now - Limited Availability</p>
-        </div>
-    </header>
-    
-    <main>
-        <div class="container">
-            <div class="ticket-options">
-                <div class="ticket-card">
-                    <h3 class="ticket-type">Single Ticket</h3>
-                    <div class="ticket-price">₵0.10</div>
-                    <ul class="ticket-features">
-                        <li>Entry for one person</li>
-                        <li>Free welcome drink</li>
-                        <li>Access to all areas</li>
-                        <li>Party souvenir</li>
-                    </ul>
-                    <button class="select-btn" data-type="single" data-price="0.10">Select Ticket</button>
-                </div>
-                
-                <div class="ticket-card">
-                    <h3 class="ticket-type">Double Ticket</h3>
-                    <div class="ticket-price">₵0.18</div>
-                    <ul class="ticket-features">
-                        <li>Entry for two people</li>
-                        <li>Two free welcome drinks</li>
-                        <li>Access to VIP area</li>
-                        <li>Special party gift pack</li>
-                    </ul>
-                    <button class="select-btn" data-type="double" data-price="0.18">Select Ticket</button>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>Welcome To</h1>
+                <h2>Our Category Portal 2025</h2>
+            </div>
+        </header>
+        
+        <div class="divider"></div>
+        
+        <div class="category-section">
+            <div class="category-title">
+                <i class="fas fa-trophy"></i>
+                <span>BEST PHOTOGENIC OF THE YEAR</span>
+                <i class="fas fa-camera"></i>
+            </div>
+            
+            <div class="dropdown-container">
+                <button class="dropdown-btn" id="dropdownBtn">
+                    <span>Select a Category</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-list" id="dropdownList">
+                    <div class="dropdown-item" data-value="FAMOUS">
+                        <i class="fas fa-user"></i>
+                        <span>MOST FAMOUS STUDENT</span>
+                    </div>
+                    <div class="dropdown-item" data-value="KICKS">
+                        <i class="fas fa-mountain"></i>
+                        <span>PRESSUR KING</span>
+                    </div>
+                    <div class="dropdown-item" data-value="QUEEN">
+                        <i class="fas fa-paw"></i>
+                        <span>PRESSURE QUEEN</span>
+                    </div>
+                    <div class="dropdown-item" data-value="CAMERA">
+                        <i class="fas fa-city"></i>
+                        <span>PHOTOGENEIC</span>
+                    </div>
+                    <div class="dropdown-item" data-value="BAD">
+                        <i class="fas fa-tshirt"></i>
+                        <span>SEXIEST GIRL</span>
+                    </div>
+                    <div class="dropdown-item" data-value="KING">
+                        <i class="fas fa-search"></i>
+                        <span>BEST CLASS PREFECT BOYS</span>
+                    </div>
+                    <div class="dropdown-item" data-value="PREFECT">
+                        <i class="fas fa-running"></i>
+                        <span>BEST CLASS PREFECT GIRLS</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="purchase-form">
-                <h2 class="form-title">Complete Your Purchase</h2>
-                
-                <form id="ticket-purchase-form">
-                    <div class="form-group">
-                        <label for="ticket-type">Ticket Type</label>
-                        <input type="text" id="ticket-type" class="form-control" value="Single Ticket" readonly>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" id="quantity" class="form-control" value="1" min="1" max="10">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="total-amount">Total Amount</label>
-                        <input type="text" id="total-amount" class="form-control" value="₵0.10" readonly>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="full-name">Full Name</label>
-                            <input type="text" id="full-name" class="form-control" placeholder="Enter your full name" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" class="form-control" placeholder="Enter your email address" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Payment Method</label>
-                        <div class="payment-methods">
-                            <div class="payment-method active" data-provider="mtn">
-                                <span>MTN</span>
-                            </div>
-                            <div class="payment-method" data-provider="tigo">
-                                <span>Tigo</span>
-                            </div>
-                            <div class="payment-method" data-provider="telecel">
-                                <span>Telecel</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="purchase-btn">Pay with Mobile Money</button>
-                </form>
+            <div class="selected-category" id="selectedCategory"></div>
+            
+            <div class="contestants-section hidden" id="contestantsSection">
+                <div class="contestants-grid" id="contestantsGrid">
+                    <!-- Contestants will be dynamically added here -->
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button class="proceed-btn hidden" id="proceedBtn">
+                    <span>PROCEED TO VOTE</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
         </div>
-    </main>
-    
-    <!-- Confirmation Modal -->
-    <div class="confirmation-modal" id="confirmation-modal">
+        
+        <footer>
+            <p>© 2025 Category Portal. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
         <div class="modal-content">
-            <h2 class="modal-title">🎉 Ticket Purchase Successful!</h2>
-            <p>Your ticket has been confirmed. Please save your confirmation code:</p>
-            <div class="confirmation-code" id="confirmation-code">YBP-XXXXXX</div>
-            <div class="confirmation-details">
-                <p><strong>Name:</strong> <span id="confirm-name"></span></p>
-                <p><strong>Phone:</strong> <span id="confirm-phone"></span></p>
-                <p><strong>Ticket Type:</strong> <span id="confirm-ticket-type"></span></p>
-                <p><strong>Quantity:</strong> <span id="confirm-quantity"></span></p>
-                <p><strong>Total Paid:</strong> <span id="confirm-amount"></span></p>
+            <div class="modal-header">
+                <h3 class="modal-title">Complete Your Vote</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
             </div>
-            <p>An SMS with this confirmation code has been sent to your phone.</p>
-            <p><em>Present this code at the entrance for admission.</em></p>
-            <div class="modal-buttons">
-                <button class="download-pdf" id="download-pdf">Download Ticket PDF</button>
-                <button class="close-modal" id="close-modal">Close</button>
+            <div class="payment-details">
+                <div class="payment-info">
+                    <span>Contestant:</span>
+                    <span id="modalContestantName">-</span>
+                </div>
+                <div class="payment-info">
+                    <span>Category:</span>
+                    <span id="modalCategoryName">-</span>
+                </div>
+                <div class="payment-amount">
+                    Voting Fee: GHS 0.10
+                </div>
+                <p>Complete your payment to cast your vote. Each vote costs GHS 0.10.</p>
             </div>
+            <button class="paystack-btn" id="paystackBtn">
+                <i class="fas fa-credit-card"></i>
+                <span>Pay with Paystack</span>
+            </button>
         </div>
     </div>
-    
-    <!-- PDF Ticket Template (Hidden) -->
-    <div class="pdf-ticket" id="pdf-ticket">
-        <div class="pdf-header">
-            <div class="pdf-logo">YOUNG BOYS PARTY</div>
-            <div class="pdf-title">OFFICIAL TICKET</div>
-            <div class="pdf-subtitle">Admission Confirmation</div>
-        </div>
-        
-        <div class="pdf-code" id="pdf-code">YBP-XXXXXX</div>
-        
-        <div class="pdf-details">
-            <div class="pdf-detail-row">
-                <span class="pdf-detail-label">Ticket Holder:</span>
-                <span class="pdf-detail-value" id="pdf-name">Customer Name</span>
-            </div>
-            <div class="pdf-detail-row">
-                <span class="pdf-detail-label">Phone Number:</span>
-                <span class="pdf-detail-value" id="pdf-phone">0241234567</span>
-            </div>
-            <div class="pdf-detail-row">
-                <span class="pdf-detail-label">Ticket Type:</span>
-                <span class="pdf-detail-value" id="pdf-ticket-type">Single Ticket</span>
-            </div>
-            <div class="pdf-detail-row">
-                <span class="pdf-detail-label">Quantity:</span>
-                <span class="pdf-detail-value" id="pdf-quantity">1</span>
-            </div>
-            <div class="pdf-detail-row">
-                <span class="pdf-detail-label">Total Paid:</span>
-                <span class="pdf-detail-value" id="pdf-amount">₵0.10</span>
-            </div>
-            <div class="pdf-detail-row">
-                <span class="pdf-detail-label">Purchase Date:</span>
-                <span class="pdf-detail-value" id="pdf-date">January 1, 2024</span>
-            </div>
-            <div class="pdf-detail-row">
-                <span class="pdf-detail-label">Reference No:</span>
-                <span class="pdf-detail-value" id="pdf-reference">YBP_123456789</span>
-            </div>
-        </div>
-        
-        <div class="pdf-qr-placeholder">
-            <strong>SCAN AT ENTRANCE</strong><br>
-            [QR Code would be generated here in production]
-        </div>
-        
-        <div class="pdf-footer">
-            <p><strong>Terms & Conditions:</strong></p>
-            <p>• This ticket is non-transferable and non-refundable</p>
-            <p>• Present this ticket at the entrance for scanning</p>
-            <p>• Valid for Young Boys Party event only</p>
-            <p>• For inquiries: contact@youngboysparty.com</p>
-        </div>
-    </div>
-    
-    <footer>
-        <div class="container">
-            <p>© 2023 Young Boys Party. All rights reserved.</p>
-            <p>POWERED BY IT SOLUTIONS</p>
-        </div>
-    </footer>
 
     <script>
+        // Sample contestant data with vote counts set to 0
+        const contestantsData = {
+            FAMOUS: [
+                { id: 1, name: "Alex Johnson", votes: 0, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Specializes in emotional portrait photography that captures the soul." },
+                { id: 2, name: "Maria Garcia", votes: 0, image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Known for her creative use of lighting and shadows in portraits." },
+                { id: 3, name: "Samuel Lee", votes: 0, image: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Focuses on environmental portraits that tell a story." }
+            ],
+            KICKS: [
+                { id: 1, name: "David Wilson", votes: 0, image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Captures breathtaking landscapes from around the world." },
+                { id: 2, name: "Emma Thompson", votes: 0, image: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Specializes in mountain and forest landscape photography." },
+                { id: 3, name: "Robert Chen", votes: 0, image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Master of capturing the golden hour in natural landscapes." }
+            ],
+            QUEEN: [
+                { id: 1, name: "James Anderson", votes: 0, image: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Documents wildlife in their natural habitats with precision." },
+                { id: 2, name: "Sophia Martinez", votes: 0, image: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Focuses on bird photography with incredible detail." },
+                { id: 3, name: "Michael Brown", votes: 0, image: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Specializes in African wildlife photography." }
+            ],
+            CAMERA: [
+                { id: 1, name: "Olivia Davis", votes: 0, image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Captures the raw energy of urban life in her street photography." },
+                { id: 2, name: "William Taylor", votes: 0, image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Known for his black and white street photography." },
+                { id: 3, name: "Isabella Clark", votes: 0, image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Focuses on candid moments in urban environments." }
+            ],
+            BAD: [
+                { id: 1, name: "Ethan Moore", votes: 0, image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Creates stunning fashion editorials for top magazines." },
+                { id: 2, name: "Ava Harris", votes: 0, image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Specializes in high-fashion conceptual photography." },
+                { id: 3, name: "Noah Martin", votes: 0, image: "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Known for his innovative use of color in fashion photography." }
+            ],
+            KING: [
+                { id: 1, name: "Liam Wilson", votes: 0, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Excellent leadership skills and academic performance." },
+                { id: 2, name: "Noah Brown", votes: 0, image: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Known for his discipline and organizational skills." }
+            ],
+            PREFECT: [
+                { id: 1, name: "Emma Johnson", votes: 0, image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Outstanding academic record and leadership qualities." },
+                { id: 2, name: "Olivia Davis", votes: 0, image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80", description: "Excellent communication and problem-solving skills." }
+            ]
+        };
+
+        // Category names mapping - UPDATED to match your dropdown
+        const categoryNames = {
+            FAMOUS: "MOST FAMOUS STUDENT",
+            KICKS: "PRESSUR KING",
+            QUEEN: "PRESSURE QUEEN",
+            CAMERA: "PHOTOGENEIC",
+            BAD: "SEXIEST GIRL",
+            KING: "BEST CLASS PREFECT BOYS",
+            PREFECT: "BEST CLASS PREFECT GIRLS"
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Ticket selection
-            const selectButtons = document.querySelectorAll('.select-btn');
-            const ticketTypeInput = document.getElementById('ticket-type');
-            const quantityInput = document.getElementById('quantity');
-            const totalAmountInput = document.getElementById('total-amount');
-            const paymentMethods = document.querySelectorAll('.payment-method');
-            const confirmationModal = document.getElementById('confirmation-modal');
-            const closeModalBtn = document.getElementById('close-modal');
-            const downloadPdfBtn = document.getElementById('download-pdf');
-            const pdfTicket = document.getElementById('pdf-ticket');
+            const dropdownBtn = document.getElementById('dropdownBtn');
+            const dropdownList = document.getElementById('dropdownList');
+            const selectedCategory = document.getElementById('selectedCategory');
+            const proceedBtn = document.getElementById('proceedBtn');
+            const contestantsSection = document.getElementById('contestantsSection');
+            const contestantsGrid = document.getElementById('contestantsGrid');
+            const paymentModal = document.getElementById('paymentModal');
+            const closeModal = document.getElementById('closeModal');
+            const paystackBtn = document.getElementById('paystackBtn');
+            const modalContestantName = document.getElementById('modalContestantName');
+            const modalCategoryName = document.getElementById('modalCategoryName');
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            const chevronIcon = dropdownBtn.querySelector('i');
             
-            let selectedTicketType = 'single';
-            let selectedTicketPrice = 0.10;
-            let selectedPaymentProvider = 'mtn';
-            let currentConfirmationData = {};
+            let selectedCategoryValue = '';
+            let selectedContestant = null;
             
-            // Set initial values
-            updateTotalAmount();
+            // Toggle dropdown
+            dropdownBtn.addEventListener('click', function() {
+                dropdownList.classList.toggle('active');
+                chevronIcon.style.transform = dropdownList.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+            });
             
-            // Handle ticket selection
-            selectButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    selectedTicketType = this.getAttribute('data-type');
-                    selectedTicketPrice = parseFloat(this.getAttribute('data-price'));
+            // Select category
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.querySelector('span').textContent;
                     
-                    // Update form
-                    ticketTypeInput.value = this.getAttribute('data-type') === 'single' ? 'Single Ticket' : 'Double Ticket';
-                    updateTotalAmount();
+                    selectedCategoryValue = value;
+                    dropdownBtn.querySelector('span').textContent = text;
+                    selectedCategory.textContent = `Selected: ${text}`;
                     
-                    // Visual feedback for selected ticket
-                    selectButtons.forEach(btn => {
-                        btn.textContent = 'Select Ticket';
-                        btn.style.background = '#e94560';
+                    // Show contestants for selected category
+                    displayContestants(value);
+                    
+                    // Show proceed button and contestants section
+                    proceedBtn.classList.remove('hidden');
+                    contestantsSection.classList.remove('hidden');
+                    
+                    dropdownList.classList.remove('active');
+                    chevronIcon.style.transform = 'rotate(0)';
+                });
+            });
+            
+            // Display contestants for a category
+            function displayContestants(category) {
+                contestantsGrid.innerHTML = '';
+                
+                if (contestantsData[category]) {
+                    contestantsData[category].forEach(contestant => {
+                        const card = document.createElement('div');
+                        card.className = 'contestant-card';
+                        card.innerHTML = `
+                            <img src="${contestant.image}" alt="${contestant.name}" class="contestant-image">
+                            <div class="contestant-info">
+                                <h3 class="contestant-name">${contestant.name}</h3>
+                                <p class="contestant-description">${contestant.description}</p>
+                                <div class="vote-count">
+                                    <i class="fas fa-heart"></i>
+                                    <span>${contestant.votes} votes</span>
+                                </div>
+                                <button class="vote-btn" data-id="${contestant.id}">
+                                    <i class="fas fa-vote-yea"></i>
+                                    Vote Now
+                                </button>
+                            </div>
+                        `;
+                        contestantsGrid.appendChild(card);
                     });
                     
-                    this.textContent = 'Selected';
-                    this.style.background = '#28a745';
-                });
-            });
-            
-            // Handle quantity changes
-            quantityInput.addEventListener('input', function() {
-                updateTotalAmount();
-            });
-            
-            // Handle payment method selection
-            paymentMethods.forEach(method => {
-                method.addEventListener('click', function() {
-                    paymentMethods.forEach(m => m.classList.remove('active'));
-                    this.classList.add('active');
-                    selectedPaymentProvider = this.getAttribute('data-provider');
-                });
-            });
-            
-            // Close modal
-            closeModalBtn.addEventListener('click', function() {
-                confirmationModal.style.display = 'none';
-            });
-            
-            // Download PDF
-            downloadPdfBtn.addEventListener('click', function() {
-                generateAndDownloadPDF();
-            });
-            
-            // Update total amount
-            function updateTotalAmount() {
-                const quantity = parseInt(quantityInput.value) || 1;
-                const total = selectedTicketPrice * quantity;
-                totalAmountInput.value = `₵${total.toFixed(2)}`;
-            }
-            
-            // Handle form submission
-            const purchaseForm = document.getElementById('ticket-purchase-form');
-            purchaseForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Get form data
-                const formData = {
-                    ticketType: ticketTypeInput.value,
-                    quantity: quantityInput.value,
-                    totalAmount: parseFloat(totalAmountInput.value.replace('₵', '')),
-                    fullName: document.getElementById('full-name').value,
-                    phone: document.getElementById('phone').value,
-                    email: document.getElementById('email').value,
-                    paymentProvider: selectedPaymentProvider
-                };
-                
-                // Validate form
-                if (!formData.fullName || !formData.phone || !formData.email) {
-                    alert('Please fill in all required fields.');
-                    return;
+                    // Add event listeners to vote buttons
+                    document.querySelectorAll('.vote-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const contestantId = parseInt(this.getAttribute('data-id'));
+                            selectedContestant = contestantsData[category].find(c => c.id === contestantId);
+                            openPaymentModal(selectedContestant, category);
+                        });
+                    });
+                } else {
+                    contestantsGrid.innerHTML = '<p>No contestants available for this category yet.</p>';
                 }
-                
-                // Validate phone number format (Ghanaian)
-                if (!isValidGhanaPhone(formData.phone)) {
-                    alert('Please enter a valid Ghanaian phone number (e.g., 0241234567)');
-                    return;
-                }
-                
-                // Process payment with Paystack
-                processPaystackPayment(formData);
+            }
+            
+            // Open payment modal
+            function openPaymentModal(contestant, category) {
+                modalContestantName.textContent = contestant.name;
+                modalCategoryName.textContent = categoryNames[category];
+                paymentModal.classList.add('active');
+            }
+            
+            // Close payment modal
+            closeModal.addEventListener('click', function() {
+                paymentModal.classList.remove('active');
             });
             
-            // Validate Ghana phone number
-            function isValidGhanaPhone(phone) {
-                // Remove any spaces or special characters
-                const cleanedPhone = phone.replace(/\D/g, '');
+            // Pay with Paystack
+            paystackBtn.addEventListener('click', function() {
+                // Use test key for development
+                const paystackPublicKey = ''; // Replace with your actual test key
                 
-                // Check if it's a valid Ghanaian number (10 digits starting with 0)
-                return /^0[2359]\d{8}$/.test(cleanedPhone);
-            }
-            
-            // Generate confirmation code
-            function generateConfirmationCode() {
-                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
-                let code = 'YBP-';
-                for (let i = 0; i < 6; i++) {
-                    code += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return code;
-            }
-            
-            // Simulate SMS sending
-            function sendConfirmationSMS(phone, code, details) {
-                console.log(`SMS sent to ${phone}:`);
-                console.log(`Young Boys Party - Ticket Confirmation`);
-                console.log(`Code: ${code}`);
-                console.log(`Ticket: ${details.ticketType}`);
-                console.log(`Quantity: ${details.quantity}`);
-                console.log(`Amount: ₵${details.totalAmount}`);
-                console.log(`Present this code at the entrance.`);
-            }
-            
-            // Generate and download PDF
-            function generateAndDownloadPDF() {
-                // Update PDF content
-                document.getElementById('pdf-code').textContent = currentConfirmationData.code;
-                document.getElementById('pdf-name').textContent = currentConfirmationData.fullName;
-                document.getElementById('pdf-phone').textContent = currentConfirmationData.phone;
-                document.getElementById('pdf-ticket-type').textContent = currentConfirmationData.ticketType;
-                document.getElementById('pdf-quantity').textContent = currentConfirmationData.quantity;
-                document.getElementById('pdf-amount').textContent = `₵${currentConfirmationData.totalAmount}`;
-                document.getElementById('pdf-date').textContent = new Date().toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                document.getElementById('pdf-reference').textContent = currentConfirmationData.reference;
-                
-                // Generate PDF
-                const element = document.getElementById('pdf-ticket');
-                const opt = {
-                    margin: 10,
-                    filename: `YoungBoysParty_Ticket_${currentConfirmationData.code}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-                
-                // Download PDF
-                html2pdf().set(opt).from(element).save();
-            }
-            
-            // Paystack Payment Integration
-            function processPaystackPayment(formData) {
-                // Show loading state
-                const purchaseBtn = document.querySelector('.purchase-btn');
-                const originalText = purchaseBtn.textContent;
-                purchaseBtn.textContent = 'Processing...';
-                purchaseBtn.disabled = true;
-                
-                // IMPORTANT: Replace with your actual Paystack public key
-                const paystackPublicKey = 'pk_live_6fe1f1cfd0d04104c4cd4ac4c7d822511de1009d'; // Your Paystack LIVE public key
-                
-                // Generate a unique reference (you might want to use a better method in production)
-                const reference = 'YBP_' + Math.floor((Math.random() * 1000000000) + 1);
-                
-                // Convert amount to pesewas (Paystack expects amount in pesewas for GHS)
-                // 1 GHS = 100 pesewas, so 0.10 GHS = 10 pesewas
-                const amountInPesewas = Math.round(formData.totalAmount * 100);
-                
-                // Configure Paystack handler
                 const handler = PaystackPop.setup({
                     key: paystackPublicKey,
-                    email: formData.email,
-                    amount: amountInPesewas, // Amount in pesewas
+                    email: 'voter@example.com', // This would be collected from the user in a real app
+                    amount: 10, // Amount in pesewas (GHS 1 = 100 pesewas)
                     currency: 'GHS',
-                    channels: ['mobile_money'], // Restrict to mobile money only
-                    ref: reference,
+                    ref: 'VOTE_' + Math.floor((Math.random() * 1000000000) + 1),
                     metadata: {
                         custom_fields: [
                             {
-                                display_name: "Ticket Type",
-                                variable_name: "ticket_type",
-                                value: formData.ticketType
+                                display_name: "Contestant",
+                                variable_name: "contestant",
+                                value: selectedContestant.name
                             },
                             {
-                                display_name: "Quantity",
-                                variable_name: "quantity",
-                                value: formData.quantity
-                            },
-                            {
-                                display_name: "Phone",
-                                variable_name: "phone",
-                                value: formData.phone
-                            },
-                            {
-                                display_name: "Full Name",
-                                variable_name: "full_name",
-                                value: formData.fullName
+                                display_name: "Category",
+                                variable_name: "category",
+                                value: categoryNames[selectedCategoryValue]
                             }
                         ]
                     },
                     callback: function(response) {
-                        // Payment successful
-                        console.log('Payment successful:', response);
+                        // Payment was successful
+                        alert('Vote successfully cast for ' + selectedContestant.name + '! Thank you for voting.');
+                        paymentModal.classList.remove('active');
                         
-                        // Generate confirmation code
-                        const confirmationCode = generateConfirmationCode();
+                        // In a real app, you would send this to your backend to record the vote
+                        console.log('Payment reference: ' + response.reference);
                         
-                        // Store confirmation data for PDF
-                        currentConfirmationData = {
-                            code: confirmationCode,
-                            fullName: formData.fullName,
-                            phone: formData.phone,
-                            ticketType: formData.ticketType,
-                            quantity: formData.quantity,
-                            totalAmount: formData.totalAmount,
-                            reference: response.reference
-                        };
-                        
-                        // Send SMS with confirmation code
-                        sendConfirmationSMS(formData.phone, confirmationCode, {
-                            ticketType: formData.ticketType,
-                            quantity: formData.quantity,
-                            totalAmount: formData.totalAmount,
-                            fullName: formData.fullName
-                        });
-                        
-                        // Show confirmation modal
-                        showConfirmationModal(confirmationCode, formData);
-                        
-                        // Reset form
-                        resetForm();
+                        // Update vote count locally (in a real app, this would come from the server)
+                        selectedContestant.votes += 1;
+                        displayContestants(selectedCategoryValue);
                     },
                     onClose: function() {
-                        // User closed the payment modal
-                        alert('Payment was cancelled.');
-                        purchaseBtn.textContent = originalText;
-                        purchaseBtn.disabled = false;
+                        alert('Payment was not completed. Vote was not cast.');
                     }
                 });
-                
-                // Open Paystack payment modal
                 handler.openIframe();
-            }
+            });
             
-            // Show confirmation modal with details
-            function showConfirmationModal(code, formData) {
-                document.getElementById('confirmation-code').textContent = code;
-                document.getElementById('confirm-name').textContent = formData.fullName;
-                document.getElementById('confirm-phone').textContent = formData.phone;
-                document.getElementById('confirm-ticket-type').textContent = formData.ticketType;
-                document.getElementById('confirm-quantity').textContent = formData.quantity;
-                document.getElementById('confirm-amount').textContent = `₵${formData.totalAmount}`;
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === paymentModal) {
+                    paymentModal.classList.remove('active');
+                }
                 
-                confirmationModal.style.display = 'flex';
-            }
-            
-            // Reset form after successful payment
-            function resetForm() {
-                const purchaseForm = document.getElementById('ticket-purchase-form');
-                const purchaseBtn = document.querySelector('.purchase-btn');
-                
-                purchaseForm.reset();
-                ticketTypeInput.value = 'Single Ticket';
-                totalAmountInput.value = '₵0.10';
-                selectedTicketType = 'single';
-                selectedTicketPrice = 0.10;
-                
-                // Reset ticket buttons
-                selectButtons.forEach(btn => {
-                    btn.textContent = 'Select Ticket';
-                    btn.style.background = '#e94560';
-                });
-                
-                // Reset payment method
-                paymentMethods.forEach(m => m.classList.remove('active'));
-                document.querySelector('.payment-method[data-provider="mtn"]').classList.add('active');
-                selectedPaymentProvider = 'mtn';
-                
-                // Reset button
-                purchaseBtn.textContent = 'Pay with Mobile Money';
-                purchaseBtn.disabled = false;
-            }
+                if (!dropdownBtn.contains(event.target) && !dropdownList.contains(event.target)) {
+                    dropdownList.classList.remove('active');
+                    chevronIcon.style.transform = 'rotate(0)';
+                }
+            });
         });
     </script>
 </body>
 </html>
+ 
